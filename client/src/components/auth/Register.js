@@ -40,10 +40,6 @@ const Register = () => {
             }catch(err){
                 console.error(err.response.data);
             }
-
-
-
-
         }
     }
 

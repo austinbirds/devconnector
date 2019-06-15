@@ -1,8 +1,12 @@
 import React, { Fragment, useState } from 'react';
+import {connect} from 'react-redux';
+import {setAlert} from '../../actions/alert';
+import {register} from '../../actions/auth';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
+import PropTypes from 'prop-types';
 
-const Register = () => {
+const Register = ({setAlert, register}) => {
     const [formData, setFormData] = useState({
         name:'',
         email:'',
@@ -17,29 +21,10 @@ const Register = () => {
     const onSubmit = async(e) =>{
         e.preventDefault();
         if(password !== password2){
-            console.log('Passwords do not match');
+            setAlert('Passwords do not match','danger', 6000);
         }else{
             // console.log(formData);
-            const newUser = {
-                name,
-                email,
-                password
-            };
-
-            try{
-                const config ={
-                    headers:{
-                        'Content-Type' : 'application/json'
-                    }
-                };
-
-                const body = JSON.stringify(newUser);
-                const res = await axios.post('/api/users', body, config);
-                console.log(res.data);
-
-            }catch(err){
-                console.error(err.response.data);
-            }
+            register(formData);
         }
     }
 
@@ -55,13 +40,14 @@ const Register = () => {
             name="name" 
             value={name} 
             onChange ={ e=> onChange(e)}
-            required />
+            // required 
+            />
         </div>
         <div className="form-group">
           <input type="email" placeholder="Email Address" name="email"
             value={email} 
             onChange ={ e=> onChange(e)}
-            required
+            // required
            />
           <small className="form-text"
             >This site uses Gravatar so if you want a profile image, use a
@@ -72,7 +58,7 @@ const Register = () => {
             type="password"
             placeholder="Password"
             name="password"
-            minLength="6"
+            // minLength="6"
             value={password} 
             onChange ={ e=> onChange(e)}
           />
@@ -82,7 +68,7 @@ const Register = () => {
             type="password"
             placeholder="Confirm Password"
             name="password2"
-            minLength="6"
+            // minLength="6"
             value={password2} 
             onChange ={ e=> onChange(e)}
           />
@@ -96,4 +82,9 @@ const Register = () => {
     )
 }
 
-export default Register
+Register.propTypes = {
+   setAlert: PropTypes.func.isRequired,
+   register: PropTypes.func.isRequired
+}
+
+export default connect(null, {setAlert, register})(Register);

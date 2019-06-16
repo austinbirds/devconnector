@@ -13,9 +13,9 @@ const config = require('config');
 
 router.get('/me', auth, async(req, res) =>{
     try{
-        const profile = await Profile.findOne({ user :req.user.id}).populate('user',['name','avatar']);
+        const profile = await Profile.findOne({user :req.user.id}).populate('user',['name','avatar']);
         if(!profile){
-            res.status(400).json({"msg":"No profile found"});
+            res.status(400).json({msg:"No profile found", user_id:req.user.id});
         }
         res.json(profile);
     }catch(err){

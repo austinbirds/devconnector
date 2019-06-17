@@ -1,5 +1,6 @@
 const express = require ('express');
 const User = require('../../models/User');
+const Post = require('../../models/Post');
 const Profile = require('../../models/Profile');
 const router = express.Router();
 const auth = require('../../middleware/auth');
@@ -140,7 +141,9 @@ router.get('/user/:user_id', async(req,res) => {
 
 router.delete('/', auth, async(req,res) => {
     try {
-        // @todo -- remove user's posts
+        // Remove user posts
+        await Post.deleteMany({ user:req.user.id});
+
         //Remove profile
         await Profile.findOneAndRemove({user: req.user.id})
         //Remove user

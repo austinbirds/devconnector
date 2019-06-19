@@ -23,7 +23,6 @@ const EditProfile = ({ profile: {profile, loading} , createProfile, getCurrentPr
 
     useEffect(() => {
         getCurrentProfile();
-
         setFormData({
             company: loading || !profile.company ? '' : profile.company,
             website: loading || !profile.website ? '' : profile.website,
@@ -38,7 +37,7 @@ const EditProfile = ({ profile: {profile, loading} , createProfile, getCurrentPr
             youtube: loading || !profile.social ? '' : profile.youtube,
             instagram: loading || !profile.social ? '' : profile.instagram
         });
-    }, [loading, getCurrentProfile]);
+    }, [loading]);
 
     const [displaySocialInputs, toggleSocialInputs] = useState(false);
 
@@ -58,10 +57,11 @@ const EditProfile = ({ profile: {profile, loading} , createProfile, getCurrentPr
     } = formData;
 
     const onChange = e => setFormData({...formData, [e.target.name]: e.target.value});
+    
 
     const onSubmit = e => {
       e.preventDefault();
-    //   console.log(formData);
+      console.log(formData);
       createProfile(formData, history, true); //true is for the Edit profile
     }
 

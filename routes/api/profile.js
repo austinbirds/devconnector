@@ -48,7 +48,7 @@ router.post('/',
         location,
         bio,
         status,
-        githubusername,
+        githubusername, 
         skills,
         youtube,
         facebook,
@@ -56,7 +56,7 @@ router.post('/',
         instagram,
         linkedin
     } = req.body;
-
+    try{
     // Build profile object
 
     const profileFields = {};
@@ -69,22 +69,30 @@ router.post('/',
     if(status) profileFields.status = status;
     if(githubusername) profileFields.githubusername = githubusername;
     if(skills){
-        // profileFields.skills = skills.split(',').map(skill => skill.trim());
-        profileFields.skills = skills.split(',').map(skill => skill.trim());
+        if(!Array.isArray(skills)) {
+            profileFields.skills = skills.split(',').map(skill => skill.trim());
+        }else skills
     }
+
+    const linkFormat = str => (str.substr(0,4)!=='http' ? 'http://'+str : str)
 
     // Build social object
     profileFields.social = {}
-    if(youtube) profileFields.social.youtube  = youtube;
-    if(twitter) profileFields.social.twitter  = twitter;
-    if(facebook) profileFields.social.facebook  = facebook;
-    if(instagram) profileFields.social.instagram  = instagram;
-    if(linkedin) profileFields.social.linkedin  = linkedin;
-    try{
+    if(youtube) profileFields.social.youtube  = linkFormat(youtube);
+    if(twitter) profileFields.social.twitter  = linkFormat(twitter);
+    if(facebook) profileFields.social.facebook  = linkFormat(facebook);
+    if(instagram) profileFields.social.instagram  = linkFormat(instagram);
+    if(linkedin) profileFields.social.linkedin  = linkFormat(linkedin);
         let profile = await Profile.findOne({user: req.user.id});
         if(profile){
             //update the profile
-            profile = await Profile.findOneAndUpdate({user:req.user.id}, {$set: profileFields}, {new: true});
+            // profile = await Profile.findOneAndUpdate({user:req.user.id}, {$set: profileFields}, {new: true});
+            profile = await Profile.findOneAndUpdate(
+                {user: req.user.id},
+                {$set: profileFields},
+                {new: true}
+            )
+            
             return res.json(profile);
         }
 
